@@ -147,17 +147,17 @@ package FoodDispenserUserFriendlyVerfication {
     	return verdict: VerdictKind;
     }
     
-    verification voiceRecordMaxTimeTest: VoiceRecordMaxTimeTest; // It's play by dispenser part: recoder, do query and match.
+    verification voiceRecordMaxTimeTest: VoiceRecordMaxTimeTest; // It's play by dispenser part, recoder, do query and match.
     verification voiceRecordVolumeTest: VoiceRecordVolumeTest; // ditto
     verification voiceRecordReliabilityTest: VoiceRecordReliabilityTest; // Need a actor, turn off the  power and try if the replay of voice work or not.
-	verification bowlMaterialTest: BowlMaterialTest; // only part: bowl involved,  do query and match 
-	verification bowlTiltTest: BowlTiltTest; // only part bowl involved, do query and match 
-	verification lockerTest: LockerTest;  // need a actor. Test with different pulling forces
-	verification temperatureTest: TemperatureTest; // Place the dispenser in different temperature environment 
-	verification movabilityTest: MovabilityTest; // Have a middle-age-person tried to move the dispenser see if it's easily movable
+    verification bowlMaterialTest: BowlMaterialTest; // only part: bowl involved,  do query and match 
+    verification bowlTiltTest: BowlTiltTest; // only part bowl involved, do query and match 
+    verification lockerTest: LockerTest;  // need a actor. Test with different pulling forces(1 pound/3 pound/6pound)
+    verification temperatureTest: TemperatureTest; // Place the dispenser in different temperature environment 
+    verification movabilityTest: MovabilityTest; // Have a middle-age-person tried to move the dispenser see if it's easily movable
     verification kibbleSizeTest: KibbleSizeTest; // Test with oversize and smallsize kibble to test the functionality
-	verification setupStepsTest: SetupStepsTest; // Have a person (age 15 - 25) try to setup the dispenser to see if statisfy 3 steps
-	verification powerStandardTest: PowerStandardTest; // Test with 5v DC power with basic functionality
-	verification foodAccessibilityTest: FoodAccessibilityTest; // Having different size/kind pet to test the accessibility of the food
+    verification setupStepsTest: SetupStepsTest; // Have a person (age 15 - 25) try to setup the dispenser to see if statisfy 3 steps
+    verification powerStandardTest: PowerStandardTest; // Test with 5v DC power with basic functionality
+    verification foodAccessibilityTest: FoodAccessibilityTest; // Having different size/kind pet to test the accessibility of the food
 }
 

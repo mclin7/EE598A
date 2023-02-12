@@ -93,6 +93,16 @@ package PetFoodDispenser {
         attribute length: Real;
     }
     
+    analysis def DualPowerAnalysis{
+    	return isRemoteBetter : Boolean;
+    	objective LocalOrRemoteCtlAnalysisObjective {
+			doc /* determine whether to provide a mobile contoller
+			 * for the pet food dispenser. 
+			 * The development of mobile app raises up the overall cost but have a better user experience
+			 * which may conflict with the cost requirement.
+			 */
+		}
+    }
 
     
 }
