@@ -1,4 +1,4 @@
-package petFoodDispenser {
+package PetFoodDispenser {
     import ScalarValues::*;
     import SI::*;
     import PDBehavior;
@@ -17,11 +17,24 @@ package petFoodDispenser {
 	    	out item foodSupply: Food;
 	    }
     }
+    
     perform action manuallyDispenseFood[*] :> PDBehavior::ManuallyDispenseFood;
-    perform action recordVioce; // TBD
-    perform action autmaticDispenseFood;  // TBD
-	perform action refill;  // TBD
+    perform action recordVioce; // TBD long push recording/ click place
+    perform action autmaticDispenseFood;  // TBD 
+	perform action refill;  // TBD open lid, put food, state to filled, lock the lid
 	
+    part def FoodDispenser {
+    	part scheduler: Scheduler;
+    	part foodHopper: FoodHopper;
+    	part bowl: Bowl;
+    	part monitor: Monitor;
+        part charginsystem: ChargingSystem;
+        part voiceRecorder: VoiceRecorder;
+    }
+    
+    part foodDispenser: FoodDispenser{
+    	// do redefines
+    }
     
     part def Scheduler {
    
@@ -61,13 +74,19 @@ package petFoodDispenser {
     abstract part def DCAdapter {
         part cable: Cable;
     }
-    
+    part def VoiceRecorder {
+        attribute volume: Integer;
+        attribute maxTime: Integer;	
+    }
     part def Monitor; // To monitor how much food is dispensed
     
-    
+    part def ChargingSystem {
+    	// TODO
+    	part adapter:DispenserAdpater;
+    }
     part def DispenserAdpater:> DCAdapter {
         part redefines cable {
-            attribute redefines length = 1.49[m];
+            attribute redefineslength = 1.49[m];
         }
     }
     part def Cable{
@@ -75,4 +94,5 @@ package petFoodDispenser {
     }
     
 
+    
 }
