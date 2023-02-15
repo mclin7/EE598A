@@ -30,7 +30,23 @@ package FoodDispenserUserFriendlyVerfication {
 			attribute actualTemp: Integer;
 			assume constraint {temperatureMinRequired<=actualTemp<=temperatureMaxRequired}
 		}
-		requirement <'8'> movabilityRequirement;
+		requirement <'8'> kibbleSizeRequirement {
+			doc /* The kibble shall between 2 - 10 mm */
+			attribute kibbleMaxSize = 10;
+			attribute kibbleMinSize = 2;
+			attribute actualKibbleSize: Integer;
+			assume constraint {kibbleMinSize<=actualKibbleSize<=kibbleMaxSize}
+		}
+		requirement <'9'> setupStepRequirement {
+			attribute expectedSteps = 3;
+			attribute acutalSteps: Integer;
+		}
+		requirement <'10'> powerStandardRequirement {
+			doc /* 5v DC */
+			attribute adapter = 5;
+		}
+		requirement <'11'> foodAccessibilityRequirement;
+		requirement <'12'> movabilityRequirement;
     }
     
     
@@ -51,6 +67,22 @@ package FoodDispenserUserFriendlyVerfication {
 		}
 		return verdict: VerdictKind;
     }
+
+	verification def KibbleSizeTest{
+		subject foodDispenser:FoodDispenser;
+		objective {
+			verify userFriendlySpecification.kibbleSizeRequirement;
+		}
+		return verdict: VerdictKind;
+	}
+
+	verification def SetupStepsTest{
+		subject foodDispenser:FoodDispenser;
+		objective {
+			verify userFriendlySpecification.setupStepRequirement;
+		}
+		return verdict: VerdictKind;
+	}
     
     verification def MovabilityTest{
     	subject foodDispenser:FoodDispenser;
@@ -59,6 +91,22 @@ package FoodDispenserUserFriendlyVerfication {
     	}
 		return verdict: VerdictKind;
     }
+
+	verification def PowerStandardTest{
+		subject foodDispenser:FoodDispenser;
+		objective {
+    		verify userFriendlySpecification.powerStandardRequirement;
+    	}
+		return verdict: VerdictKind;
+	}
+
+	verification def FoodAccessibilityTest{
+		subject foodDispenser:FoodDispenser;
+		objective {
+			verify userFriendlySpecification.foodAccessibilityRequirement;
+		}
+		return verdict: VerdictKind;
+	}
     
     verification def VoiceRecordVolumeTest{
     	subject foodDispenser:FoodDispenser; 
@@ -101,12 +149,14 @@ package FoodDispenserUserFriendlyVerfication {
     verification voiceRecordMaxTimeTest: VoiceRecordMaxTimeTest; // It's play by dispenser part: recoder, do query and match.
     verification voiceRecordVolumeTest: VoiceRecordVolumeTest; // ditto
     verification voiceRecordReliabilityTest: VoiceRecordReliabilityTest; // Need a actor, turn off the  power and try if the replay of voice work or not.
-    
 	verification bowlMaterialTest: BowlMaterialTest; // only part: bowl involved,  do query and match 
 	verification bowlTiltTest: BowlTiltTest; // only part bowl involved, do query and match 
 	verification lockerTest: LockerTest;  // need a actor. Test with different pulling forces
 	verification temperatureTest: TemperatureTest; // Place the dispenser in different temperature environment 
-	verification movabilityTest: MovabilityTest; // Have a middle-age-person
-    
+	verification movabilityTest: MovabilityTest; // Have a middle-age-person tried to move the dispenser see if it's easily movable
+    verification kibbleSizeTest: KibbleSizeTest; // Test with oversize and smallsize kibble to test the functionality
+	verification setupStepsTest: SetupStepsTest; // Have a person (age 15 - 25) try to setup the dispenser to see if statisfy 3 steps
+	verification powerStandardTest: PowerStandardTest; // Test with 5v DC power with basic functionality
+	verification foodAccessibilityTest: FoodAccessibilityTest; // Having different size/kind pet to test the accessibility of the food
 }
 
