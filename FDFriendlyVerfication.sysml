@@ -1,6 +1,7 @@
 package FoodDispenserUserFriendlyVerfication {
     import ScalarValues::*;
 	import SI::*;
+	import VerificationCases::*;
 	
 	import PetFoodDispenser::*;
 	
