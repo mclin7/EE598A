@@ -8,7 +8,7 @@ package FoodDispenserUserFriendlyVerfication {
     	subject foodDispenser; 
     	requirement <'1'> voiceRecordTimeRequirement {
     		doc /*The user shell be able to record voice of up to 10s */
-    		attribute maxTimeRequired=10 [s];
+    		attribute maxTimeRequired = 10 [s];
     		attribute actualMaxTime = 10 [s];
     		assume constraint {maxTimeRequired==actualMaxTime}
     	}
@@ -23,6 +23,14 @@ package FoodDispenserUserFriendlyVerfication {
     	requirement <'4'> bowlMaterialRequirement;
     	requirement bowlTiltRequirement;
     	requirement lockerRequirement;
+		requirement <'7'> temperatureRequirement {
+			doc /* The device shall work well between [-20, 40] degree */
+			attribute temperatureMinRequired = -20;
+			attribute temperatureMaxRequired = 40;
+			attribute actualTemp: Integer;
+			assume constraint {temperatureMinRequired<=actualTemp<=temperatureMaxRequired}
+		}
+		requirement <'8'> movabilityRequirement;
     }
     
     
@@ -34,6 +42,24 @@ package FoodDispenserUserFriendlyVerfication {
 		}
 		return verdict: VerdictKind;
     }
+    
+    // Temperature test
+    verification def TemperatureTest{
+    	subject foodDispenser:FoodDispenser;
+		objective {
+			verify userFriendlySpecification.temperatureRequirement;
+		}
+		return verdict: VerdictKind;
+    }
+    
+    verification def MovabilityTest{
+    	subject foodDispenser:FoodDispenser;
+    	objective {
+    		verify userFriendlySpecification.movabilityRequirement;
+    	}
+		return verdict: VerdictKind;
+    }
+    
     verification def VoiceRecordVolumeTest{
     	subject foodDispenser:FoodDispenser; 
     	objective {
@@ -79,6 +105,8 @@ package FoodDispenserUserFriendlyVerfication {
 	verification bowlMaterialTest: BowlMaterialTest; // only part: bowl involved,  do query and match 
 	verification bowlTiltTest: BowlTiltTest; // only part bowl involved, do query and match 
 	verification lockerTest: LockerTest;  // need a actor. Test with different pulling forces
+	verification temperatureTest: TemperatureTest; // Place the dispenser in different temperature environment 
+	verification movabilityTest: MovabilityTest; // Have a middle-age-person
     
 }
 
