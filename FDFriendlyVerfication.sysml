@@ -1,53 +1,54 @@
-package FoodDispenserUserFriendlyVerfication {
+package FDFriendlyVerfication {
     import ScalarValues::*;
 	import SI::*;
 	import VerificationCases::*;
 	
 	import PetFoodDispenser::*;
+	requirement def FoodDispenserRequirement;
 	
 	requirement userFriendlySpecification{
     	subject foodDispenser; 
-    	requirement <'1'> voiceRecordTimeRequirement {
+    	requirement <'1'> voiceRecordTimeRequirement: FoodDispenserRequirement {
     		doc /*The user shell be able to record voice of up to 10s */
-    		attribute maxTimeRequired = 10 [s];
-    		attribute actualMaxTime = 10 [s];
+    		attribute maxTimeRequired = 10;
+    		attribute actualMaxTime = 10;
     		assume constraint {maxTimeRequired==actualMaxTime}
     	}
-    	requirement <'2'> voicePlayVolumeRequirement {
+    	requirement <'2'> voicePlayVolumeRequirement: FoodDispenserRequirement {
     		doc /* The volume shell set up as default in range [50, 60] decibels */
     		attribute volumeMaxRequired = 60;
     		attribute volumeMinRequired = 50;
     		attribute actualVolume: Integer;
     		assume constraint {volumeMinRequired<=actualVolume<=volumeMaxRequired}
     	}
-    	requirement <'3'> recoderReliableRequirement;
-    	requirement <'4'> bowlMaterialRequirement;
-    	requirement bowlTiltRequirement;
-    	requirement lockerRequirement;
-		requirement <'7'> temperatureRequirement {
+    	requirement <'3'> recoderReliableRequirement: FoodDispenserRequirement;
+    	requirement <'4'> bowlMaterialRequirement: FoodDispenserRequirement;
+    	requirement bowlTiltRequirement: FoodDispenserRequirement;
+    	requirement lockerRequirement: FoodDispenserRequirement;
+		requirement <'7'> temperatureRequirement: FoodDispenserRequirement {
 			doc /* The device shall work well between [-20, 40] degree */
 			attribute temperatureMinRequired = -20;
 			attribute temperatureMaxRequired = 40;
 			attribute actualTemp: Integer;
 			assume constraint {temperatureMinRequired<=actualTemp<=temperatureMaxRequired}
 		}
-		requirement <'8'> kibbleSizeRequirement {
+		requirement <'8'> kibbleSizeRequirement:FoodDispenserRequirement {
 			doc /* The kibble shall between 2 - 10 mm */
 			attribute kibbleMaxSize = 10;
 			attribute kibbleMinSize = 2;
 			attribute actualKibbleSize: Integer;
 			assume constraint {kibbleMinSize<=actualKibbleSize<=kibbleMaxSize}
 		}
-		requirement <'9'> setupStepRequirement {
+		requirement <'9'> setupStepRequirement: FoodDispenserRequirement {
 			attribute expectedSteps = 3;
 			attribute acutalSteps: Integer;
 		}
-		requirement <'10'> powerStandardRequirement {
+		requirement <'10'> powerStandardRequirement: FoodDispenserRequirement {
 			doc /* 5v DC */
 			attribute adapter = 5;
 		}
-		requirement <'11'> foodAccessibilityRequirement;
-		requirement <'12'> movabilityRequirement;
+		requirement <'11'> foodAccessibilityRequirement: FoodDispenserRequirement;
+		requirement <'12'> movabilityRequirement: FoodDispenserRequirement;
     }
     
     
@@ -57,7 +58,7 @@ package FoodDispenserUserFriendlyVerfication {
     	objective {
 			verify userFriendlySpecification.voiceRecordTimeRequirement;
 		}
-		return verdict: VerdictKind;
+		return verdict: Boolean;
     }
     
     // Temperature test
@@ -66,7 +67,7 @@ package FoodDispenserUserFriendlyVerfication {
 		objective {
 			verify userFriendlySpecification.temperatureRequirement;
 		}
-		return verdict: VerdictKind;
+		return verdict: Boolean;
     }
 
 	verification def KibbleSizeTest{
@@ -74,7 +75,7 @@ package FoodDispenserUserFriendlyVerfication {
 		objective {
 			verify userFriendlySpecification.kibbleSizeRequirement;
 		}
-		return verdict: VerdictKind;
+		return verdict: Boolean;
 	}
 
 	verification def SetupStepsTest{
@@ -82,7 +83,7 @@ package FoodDispenserUserFriendlyVerfication {
 		objective {
 			verify userFriendlySpecification.setupStepRequirement;
 		}
-		return verdict: VerdictKind;
+		return verdict: Boolean;
 	}
     
     verification def MovabilityTest{
@@ -90,7 +91,7 @@ package FoodDispenserUserFriendlyVerfication {
     	objective {
     		verify userFriendlySpecification.movabilityRequirement;
     	}
-		return verdict: VerdictKind;
+		return verdict: Boolean;
     }
 
 	verification def PowerStandardTest{
@@ -98,7 +99,7 @@ package FoodDispenserUserFriendlyVerfication {
 		objective {
     		verify userFriendlySpecification.powerStandardRequirement;
     	}
-		return verdict: VerdictKind;
+		return verdict: Boolean;
 	}
 
 	verification def FoodAccessibilityTest{
@@ -106,7 +107,7 @@ package FoodDispenserUserFriendlyVerfication {
 		objective {
 			verify userFriendlySpecification.foodAccessibilityRequirement;
 		}
-		return verdict: VerdictKind;
+		return verdict: Boolean;
 	}
     
     verification def VoiceRecordVolumeTest{
@@ -114,14 +115,14 @@ package FoodDispenserUserFriendlyVerfication {
     	objective {
     		verify userFriendlySpecification.voicePlayVolumeRequirement;
     	}
-    	return verdict: VerdictKind;
+    	return verdict: Boolean;
     }
     verification def VoiceRecordReliabilityTest{
     	subject foodDispenser:FoodDispenser; 
     	objective {
     		verify userFriendlySpecification.recoderReliableRequirement;
     	}
-    	return verdict: VerdictKind;
+    	return verdict: Boolean;
     }
     
     // Test case pet health objective
@@ -130,21 +131,21 @@ package FoodDispenserUserFriendlyVerfication {
     	objective {
     		verify userFriendlySpecification.bowlMaterialRequirement;
     	}
-    	return verdict: VerdictKind;
+    	return verdict: Boolean;
     }
     verification def BowlTiltTest{
     	subject foodDispenser:FoodDispenser; 
     	objective {
     		verify userFriendlySpecification.bowlTiltRequirement;
     	}
-    	return verdict: VerdictKind;
+    	return verdict: Boolean;
     }
     verification def LockerTest{
     	subject foodDispenser:FoodDispenser; 
     	objective {
     		verify userFriendlySpecification.lockerRequirement;
     	}
-    	return verdict: VerdictKind;
+    	return verdict: Boolean;
     }
     
     verification voiceRecordMaxTimeTest: VoiceRecordMaxTimeTest; // It's play by dispenser part, recoder, do query and match.
