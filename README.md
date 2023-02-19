@@ -6,7 +6,7 @@
 
 ## Project structure
 EE598A
-    - FDFriendlyVerification.sysml  # will include the verification for pet or user friendly requirements.
+    - FDFriendlyVerfication.sysml  # will include the verification for pet or user friendly requirements.
     - PDBehavior.sysml              # PetFoodDispenser behaviors implementation
-    - petFoodDispenser.sysml        # The basic PetFoodDispenser definition and implement
+    - PetFoodDispenser.sysml        # The basic PetFoodDispenser definition and implement
     
