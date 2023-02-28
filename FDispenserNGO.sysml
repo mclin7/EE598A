@@ -1,10 +1,11 @@
 /** Contains definitions used when connecting 
  * Needs/Goals/Objectives to each other and to requirements
  */
-package FdispenserNGO {
+package FDispenserNGO {
+	import FDFriendlyVerfication::*;
+	
 	import ScalarValues::*;
 	import SI::*;
-	import FDFriendlyVerfication::*;
 	
 	
 	abstract part def DesignElement {
@@ -26,15 +27,15 @@ package FdispenserNGO {
 		end goal : Goal;
 		end need : Need;
 	}
-		
+
 	allocation def ReqToGoal {
 		end req : FoodDispenserRequirement;
-		end goal : Goal;		
+		end goal : Goal;
 	}
 
 	allocation def ReqToNeed {
 		end req : FoodDispenserRequirement;
-		end need : Need;		
+		end need : Need;
 	}
 
     // conops
@@ -74,14 +75,14 @@ package FdispenserNGO {
 	
 	allocation volumeToRecoder: ReqToNeed
 	    allocate userFriendlySpecification.voicePlayVolumeRequirement to voiceRecordandPlayNeed;
-	    
+
 	allocation reliablilityToRecoder: ReqToNeed
 	    allocate userFriendlySpecification.recoderReliableRequirement to voiceRecordandPlayNeed;
 	
 	allocation MaterialToBowl: ReqToNeed
 	    allocate userFriendlySpecification.bowlMaterialRequirement to healthGuaranteeNeed;
 
-    allocation designToBowl: ReqToNeed 
+    allocation designToBowl: ReqToNeed
         allocate userFriendlySpecification.bowlTiltRequirement to healthGuaranteeNeed;
     	
 	allocation lookToHopper: ReqToNeed

@@ -76,7 +76,8 @@ package PetFoodDispenser {
     }
     part def VoiceRecorder {
         attribute volume: Integer;
-        attribute maxTime: Integer;    
+        attribute maxTime: Integer;
+        part buttons: SchedulePartDef::Button[1..4];
     }
     part def Monitor; // To monitor how much food is dispensed
     
