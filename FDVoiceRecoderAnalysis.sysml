@@ -4,6 +4,7 @@
  	import ScalarValues::*;
 	import SI::*;
 	import PetFoodDispenser::*;
+	import PetFoodDispenserAnalyses::*;
 	
 	
     /** For early stage design may not have more than a few levels to distinguish*/
@@ -17,19 +18,31 @@
 	part def SingleVoiceRecorder :> VoiceRecorder {
 		part redefines buttons[1];
 		attribute voicesCacheCount = 1;
+		attribute friendlyIndex = RecoderUserFriendly::good;
 	}
 	
 	part def MultipleVoicesRecorder :> VoiceRecorder {
 		part redefines buttons[3];
 		attribute voicesCacheCount = 10;
+		attribute friendlyIndex = RecoderUserFriendly::okay;
 	}
 	
-	part def singleVioceRecoderFD:> FoodDispenser{
+	part singleVioceRecoderFD:> FoodDispenser{
 		part redefines voiceRecorder: SingleVoiceRecorder;
 	}
-	part def multipleVoicesRecorderFD:> FoodDispenser{
+	
+	part multipleVoicesRecorderFD:> FoodDispenser{
 		part redefines voiceRecorder: MultipleVoicesRecorder;
 	}
+	
+	part singleVoiceRecorder:SingleVoiceRecorder;
+	part multipleVoicesRecorder:MultipleVoicesRecorder;
+	/* indicating where we got our sensor analysis from */
+	allocation singleVioceRecoderFDAnalysis : AnalysisActionToPart
+		allocate voiceRecoderAnalysis to singleVoiceRecorder.friendlyIndex;
+	
+	allocation multipleVioceRecoderFDAnalysis : AnalysisActionToPart
+		allocate voiceRecoderAnalysis to multipleVoicesRecorder.friendlyIndex;
 	
 	analysis def VoiceRecoderAnalysis {
 		subject foodDispenser: FoodDispenser;
