@@ -33,14 +33,24 @@ package PetFoodDispenser {
     }
     
     part foodDispenser: FoodDispenser{
-        // do redefines
+        part redefines bowl {
+			attribute redefines material = '304 stainless steel';
+			attribute redefines mass = 30[g];
+			attribute redefine tilt = 8;
+		}
+		part redefines voiceRecorder {
+	        attribute redefines volume = 60;
+	        attribute redefines maxTime = 10[s];
+	        attribute mass = 10[g];
+	        part redefines buttons[1];
+	    }
+	   
     }
     
     part def Scheduler {
    
         attribute dispensedPortions: Integer;
         attribute meetsPerDay: Integer;
-  
         part screen: SchedulePartDef::Screen ;
         part dispenseButton: SchedulePartDef::Button;
         part voiceRecordButton: SchedulePartDef::Button;
@@ -58,7 +68,14 @@ package PetFoodDispenser {
     
     }
 
-    part def Bowl;
+	port def AssemblyPort
+    part def Bowl{
+    	attribute material: String;
+    	attribute mass:>ISQ::mass;
+    	attribute tilt:Integer:  // tilt degree
+
+    	port bulgingPort:AssemblyPort;  // used to connect with the PetFoodDispenser hopper
+    }
     item def DesiccantBag;
     item def Food{            
         attribute foodMass:>ISQ::mass;
@@ -69,15 +86,27 @@ package PetFoodDispenser {
         item dbag: DesiccantBag;
     }
     part def DesiccantBagHolder;
+    part def Mike;
     
+    port def ControlPort;
     part def Tank;
     abstract part def DCAdapter {
         part cable: Cable;
     }
+    
+
     part def VoiceRecorder {
         attribute volume: Integer;
         attribute maxTime: Integer;
+        
         part buttons: SchedulePartDef::Button[1..4];
+        part mike:Mike;
+        
+        port playSingalPort:ControlPort;  // connect to scheduler single port
+        
+        perform action recordVoice:RecordVoice;
+        perform action mPlayVoice:ManuallyPlayVoice;
+        perform action sPlayVoice:SchedulePlayVoice;
     }
     part def Monitor; // To monitor how much food is dispensed
     

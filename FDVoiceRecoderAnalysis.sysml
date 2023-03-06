@@ -55,8 +55,8 @@
 
 	package SignalDefinitions{  
         attribute def  PlayEvent;  // push button A, release immediately Or trigger by timer
-        attribute def  StartRecordEvent;  // keep putting button A
-        attribute def  StopRecordEvent;  // release after long push button A
+        attribute def  StartRecordEvent;  // long push(press and hold button for 3s)
+        attribute def  StopRecordEvent;  // release after long push(press and hold button for 3s) button A
         attribute def  DeleteEvent;    // push button C
         attribute def  NextVoiceEvent;  // push button B
         attribute def  FinishPlayEvent;  
@@ -196,7 +196,7 @@
 			}
 			message record_voice_message of PayloadDefinitions::RecordedVoiceDeliver from petOwner.record_voice_request to voiceRecoder.record_request_received;
 			
-			part voicePlayer[1] {
+			part mike[1] {
 				event occurrence voice_play_event;
 			
 			}
@@ -206,7 +206,7 @@
 			}
 			
 	
-            message play_message of PayloadDefinitions::PlayVoiceDeliver from voiceRecoder.voice_play_event to voicePlayer.voice_play_event;
+            message play_message of PayloadDefinitions::PlayVoiceDeliver from voiceRecoder.voice_play_event to mike.voice_play_event;
 		
 	}
 	}

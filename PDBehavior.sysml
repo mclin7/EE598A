@@ -30,5 +30,8 @@ package PDBehavior {
         }
         
     }
+    action def RecordVoice; // TODO
+    action def ManuallyPlayVoice; // triggered manually by press the button
+    action def SchedulePlayVoice; // triggered by scheduler singal
 
 }
