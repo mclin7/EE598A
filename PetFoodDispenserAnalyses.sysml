@@ -3,12 +3,15 @@ package PetFoodDispenserAnalyses{
 	import Parts::*;
 
 	/** see in teamP Analysis List  */
-	action voiceRecoderAnalysis : AnalysisAction {
-		redefines oslcUri = "team3/analysis/voiceRecoderAnalysis";
+	action voiceRecoderFriendlyAnalysis : AnalysisAction {
+		redefines oslcUri = "team3/userexperience/voiceRecoderFriendlyAnalysis";
 	}
 	
+	action voiceRecoderSystemComplexityAnalysis : AnalysisAction{
+		redefine oslcUri = "team3/cost/voiceRecoderSystemComplexityAnalysis"
+	}
 	action bowlMaterialHealthyAnalysis: AnalysisAction{
-		redefines oslcUri = "team3/analysis/bowlMaterialHealthyAnalysis";
+		redefines oslcUri = "team3/userexperience/bowlMaterialHealthyAnalysis";
 	}
 	
 	/** connects outside analysis to a part  */		

@@ -8,7 +8,7 @@
 	
 	
     /** For early stage design may not have more than a few levels to distinguish*/
-	enum def RecoderUserFriendly :> Integer {
+	enum def RecoderIndex :> Integer {
 		excellent = 4;
 		good = 3;
 		okay = 2;
@@ -18,13 +18,15 @@
 	part def SingleVoiceRecorder :> VoiceRecorder {
 		part redefines buttons[1];
 		attribute voicesCacheCount = 1;
-		attribute friendlyIndex = RecoderUserFriendly::good;
+		attribute friendlyIndex = RecoderIndex::good;
+		attribute costIndex = RecoderIndex::excellent;
 	}
 	
 	part def MultipleVoicesRecorder :> VoiceRecorder {
 		part redefines buttons[3];
 		attribute voicesCacheCount = 10;
-		attribute friendlyIndex = RecoderUserFriendly::okay;
+		attribute friendlyIndex = RecoderIndex::okay;
+		attribute costIndex = RecoderIndex::bad;
 	}
 	
 	part singleVioceRecoderFD:> FoodDispenser{
@@ -39,14 +41,26 @@
 	part multipleVoicesRecorder:MultipleVoicesRecorder;
 	/* indicating where we got our sensor analysis from */
 	allocation singleVioceRecoderFDAnalysis : AnalysisActionToPart
-		allocate voiceRecoderAnalysis to singleVoiceRecorder.friendlyIndex;
+		allocate voiceRecoderFriendlyAnalysis to singleVoiceRecorder.friendlyIndex;
 	
 	allocation multipleVioceRecoderFDAnalysis : AnalysisActionToPart
-		allocate voiceRecoderAnalysis to multipleVoicesRecorder.friendlyIndex;
+		allocate voiceRecoderFriendlyAnalysis to multipleVoicesRecorder.friendlyIndex;
 	
-	analysis def VoiceRecoderAnalysis {
-		subject foodDispenser: FoodDispenser;
+	allocation sigleVoiceRecoderSystemComplexityAnalysis: AnalysisActionToPart
+	    allocate voiceRecoderSystemComplexityAnalysis to singleVoiceRecorder.costIndex;
+	    
+    allocation multiVoiceRecoderSystemComplexityAnalysis : AnalysisActionToPart
+		allocate voiceRecoderSystemComplexityAnalysis to multipleVoicesRecorder.costIndex;
 		
+    calc def RecoderEvaluation {
+        in friendlyIndex: Integer;
+        in costIndex: Integer;
+        return eval:Integer;
+    }
+    
+	analysis def voiceRecoderTradeOffAnalysis {
+		subject foodDispenser: FoodDispenser;
+		/** note that here we are simply returning the choice we come up with */
 		return isSingleVioceBetter : Boolean;
 		
 		objective SingleOrMultipleVoicesAnalysisObjective {
@@ -59,10 +73,10 @@
 				 * 1. The number of buttons, more button more operational complexity
 				 * 2. The complexity of system, more complexity more cost and time to build the system. Will use the state machine Diagram to support the satement
 				 * 3. The number of voices can be recorded, More voices mean more cache(cost) but better user experience
-				 * 
-				 * So evaluate result = evalutate(buttonsNumber) + evaluate(systemComplexity) + evaluate(voicesNumber)
+				 * return true if singleVoiceRecoder(costIndex + friendlyIndex) > multipleVoiceRecoder(costIndex + friendlyIndex) Or multipleVoiceRecoder.costIndex == RecoderIndex::bad;
 				 */
 			}
+		
 		}
 	}
 
