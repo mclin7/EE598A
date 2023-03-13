@@ -62,13 +62,21 @@ package PetFoodDispenser {
     }
 
     part def FoodHopper{
-        attribute remainingFood : Integer;
+        attribute FoodDispensFlag : Boolean;
+        attribute remainingFood : Real;
+        attribute hopperCapacity: Real;
+        attribute material: String;
+        
         part tank: Tank;
         part lid: Lid;
+        part buckle:Buckle;
         
         connect lid to tank; // Todo: other connection
-        port foodInPort: HopperDef::FoodInPort;
-        port fooddispensePort: HopperDef::DispensePort;
+        port foodInPort:FoodInPort;
+        port fooddispensePort:DispensePort;
+
+     perform action washHopper:Wash;
+     perform action dispense:Dispense;
     
     }
 
@@ -87,6 +95,9 @@ package PetFoodDispenser {
     }
     
     part def Lid{
+        attribute lidStatus: Boolean;
+        attribute sealStatus: Boolean;
+        attribute material: String;
         part holder: DesiccantBagHolder;
         item dbag: DesiccantBag;
     }
@@ -114,7 +125,12 @@ package PetFoodDispenser {
         perform action mPlayVoice:ManuallyPlayVoice;
         perform action sPlayVoice:ScheduledPlayVoice;
     }
-    part def Monitor; // To monitor how much food is dispensed
+    part def Monitor{
+         attribute foodWeightRecord:Real; 
+         attribute alertThreshold: Real;
+         attribute isalerting:Boolean;
+         perform action alert:Alert;
+    } // To monitor how much food is dispensed
     
     part def ChargingSystem {
         // TODO

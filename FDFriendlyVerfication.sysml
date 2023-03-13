@@ -53,6 +53,14 @@ package FDFriendlyVerfication {
 		}
 		requirement <'11'> foodAccessibilityRequirement: FoodDispenserRequirement;
 		requirement <'12'> movabilityRequirement: FoodDispenserRequirement;
+		requirement <'13'> eazyCleanupRequirement:FoodDispenserRequirement;
+		requirement <'14'> alertAbilityRequirement:FoodDispenserRequirement{
+			doc /*The monitor should alarm the user when food weight is low*/
+			attribute actualalertstatus:Boolean;
+			attribute expectedstatus = true;
+			assume constraint {actualalertstatus==expectedstatus};		
+		}
+		
     }
     
     
@@ -236,5 +244,14 @@ package FDFriendlyVerfication {
     verification setupStepsTest: SetupStepsTest; // Have a person (age 15 - 25) try to setup the dispenser to see if statisfy 3 steps
     verification powerStandardTest: PowerStandardTest; // Test with 5v DC power with basic functionality
     verification foodAccessibilityTest: FoodAccessibilityTest; // Having different size/kind pet to test the accessibility of the food
+	verification eazyCleanupTest:EazyCleanupTest;//Have a user try to wash it and check if cvan finish washing in 3 minutes.
+    verification alertAbilityTest: AlertAbilityTest{
+    	subject foodDispenser:FoodDispenser; 
+    	objective {
+			verify userFriendlySpecification.alertAbilityRequirement
+		}
+		return verdict: Boolean;
+    	}
+        	
 }
 

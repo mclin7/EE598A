@@ -3,6 +3,9 @@ package PDBehavior {
   
     action def PutButton { out cmd : Integer; }
     action def HoldButton { out cmd: Integer; }
+    action def PullBuckle  { out cmd : Integer; }
+    action def PushBuckle   { out cmd : Integer; }
+
     action def SendPlaySignal { out cmd: Integer; }
     action def Record{
         in icmd: Integer;
@@ -88,5 +91,34 @@ package PDBehavior {
         }
         then done;
     }
+        
+    action def Wash//Triggered when buckle is push-up, stop when buckle push-down by user
+    {
+        first start;
+    
+        then merge continueOpening;
+
+        then action hopper: PullBuckle;
+
+        then decide;
+          if hopper.cmd == 1 then hopperdismount;
+          if hopper.cmd == 0 then mount;
+
+        action hopperdismount : HopperDismount{
+            in cmd = hopper.cmd;
+        }
+        then continueOpening;
+
+        action mount :Mount;
+
+        then done;
+
+        action def Mount;
+        action def DusMount {
+            in cmd: Integer;
+        }
+        
+    }
+    action def Alert;//triggered when food mount less than the threhold,
 
 }
