@@ -5,6 +5,11 @@ package PDBehavior {
     action def HoldButton { out cmd: Integer; }
     action def PullBuckle  { out cmd : Integer; }
     action def PushBuckle   { out cmd : Integer; }
+    action def Readweigh {out weight:Real;}
+    action def ProcessWdata{in data:Real;}
+    action def Sendmessage {out cmd:Integer;}
+    action def StopSending{out cmd:Integer; };
+
 
     action def SendPlaySignal { out cmd: Integer; }
     action def Record{
@@ -119,6 +124,25 @@ package PDBehavior {
         }
         
     }
-    action def Alert;//triggered when food mount less than the threhold,
+    action def Alert{ //triggered when food mount less than the threhold,
+        first start;
+        then merge continue;
+        then action readweigh:Readweigh;
+        then action processWdata:ProcessWdata{
+           in data= readweigh.weight;
+        }
+        then decide;
+            if processWdata.data<=30[g] then sendmessage;
+            if processWdata.data>30[g] then stopsending;
+        
+        then continue;
+        action sendmessage:Sendmessage{
+        	out cmd=1;
+        }
+        action stopsending:StopSending{
+        	out cmd=0;
+        }
+      
+    }
 
 }
