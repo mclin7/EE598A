@@ -1,5 +1,6 @@
 package PDBehavior {
     import ScalarValues::*;
+    import SI::*;
   
     action def PutButton { out cmd : Integer; }
     action def HoldButton { out cmd: Integer; }
@@ -8,7 +9,8 @@ package PDBehavior {
     action def Readweigh {out weight:Real;}
     action def ProcessWdata{in data:Real;}
     action def Sendmessage {out cmd:Integer;}
-    action def StopSending{out cmd:Integer; };
+    action def StopSending{out cmd:Integer; }
+    action def HopperDismount;
 
 
     action def SendPlaySignal { out cmd: Integer; }
