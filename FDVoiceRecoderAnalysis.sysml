@@ -1,11 +1,11 @@
  /** Contains definitions for our voice recorders and a simple 
  * example of specifying configurations (record one voice vs record multiple voices)*/
- package FDVoiceRecoderAnalysis {
+ package FDVoiceRecorderAnalysis {
  	import ScalarValues::*;
 	import SI::*;
 	import PetFoodDispenser::*;
 	import PetFoodDispenserAnalyses::*;
-	
+	import FDFriendlyVerfication::*;
 	
     /** For early stage design may not have more than a few levels to distinguish*/
 	enum def RecoderIndex :> Integer {
@@ -29,51 +29,66 @@
 		attribute costIndex = RecoderIndex::bad;
 	}
 	
-	part singleVioceRecoderFD:> FoodDispenser{
+	part singleVioceRecoderFD: FoodDispenser{
 		part redefines voiceRecorder: SingleVoiceRecorder;
 	}
 	
-	part multipleVoicesRecorderFD:> FoodDispenser{
+	part multipleVoicesRecorderFD: FoodDispenser{
 		part redefines voiceRecorder: MultipleVoicesRecorder;
 	}
 	
 	part singleVoiceRecorder:SingleVoiceRecorder;
 	part multipleVoicesRecorder:MultipleVoicesRecorder;
 	/* indicating where we got our sensor analysis from */
-	allocation singleVioceRecoderFDAnalysis : AnalysisActionToPart
-		allocate voiceRecoderFriendlyAnalysis to singleVoiceRecorder.friendlyIndex;
+	allocation singleVioceRecorderFDAnalysis : AnalysisActionToPart
+		allocate voiceRecorderFriendlyAnalysis to singleVoiceRecorder.friendlyIndex;
 	
-	allocation multipleVioceRecoderFDAnalysis : AnalysisActionToPart
-		allocate voiceRecoderFriendlyAnalysis to multipleVoicesRecorder.friendlyIndex;
+	allocation multipleVioceRecorderFDAnalysis : AnalysisActionToPart
+		allocate voiceRecorderFriendlyAnalysis to multipleVoicesRecorder.friendlyIndex;
 	
-	allocation sigleVoiceRecoderSystemComplexityAnalysis: AnalysisActionToPart
-	    allocate voiceRecoderSystemComplexityAnalysis to singleVoiceRecorder.costIndex;
+	allocation sigleVoiceRecorderSystemComplexityAnalysis: AnalysisActionToPart
+	    allocate voiceRecorderSystemComplexityAnalysis to singleVoiceRecorder.costIndex;
 	    
-    allocation multiVoiceRecoderSystemComplexityAnalysis : AnalysisActionToPart
-		allocate voiceRecoderSystemComplexityAnalysis to multipleVoicesRecorder.costIndex;
+    allocation multiVoiceRecorderSystemComplexityAnalysis : AnalysisActionToPart
+		allocate voiceRecorderSystemComplexityAnalysis to multipleVoicesRecorder.costIndex;
 		
-    calc def RecoderEvaluation {
+    calc def RecorderEvaluation {
         in friendlyIndex: Integer;
         in costIndex: Integer;
-        return eval:Integer;
+        return :Integer;
     }
     
-	analysis def voiceRecoderTradeOffAnalysis {
-		subject foodDispenser: FoodDispenser;
-		/** note that here we are simply returning the choice we come up with */
-		return isSingleVioceBetter : Boolean;
+	analysis voiceRecorderTradeOffAnalysis {
+		subject foodDispensers[2]: FoodDispenser;
+
+		part fDWithSigleRecorder:>foodDispensers{
+			part redefines voiceRecorder: SingleVoiceRecorder;
+		}
+		part fDWithMultipleRecorder:>foodDispensers{
+			part redefines voiceRecorder: MultipleVoicesRecorder;
+		}
+
+		attribute singleVoiceRecorderIndex = RecorderEvaluation(fDWithSigleRecorder.voiceRecorder.friendlyIndex, fDWithSigleRecorder.voiceRecorder.costIndex);
+		attribute multipleVoicesRecorderIndex = RecorderEvaluation(fDWithMultipleRecorder.voiceRecorder.friendlyIndex, fDWithMultipleRecorder.voiceRecorder.costIndex);
 		
+		/** note that here we are simply returning the choice we come up with */
+		return isSingleVioceBetter : Boolean = singleVoiceRecorderIndex>multipleVoicesRecorderIndex;
+
 		objective SingleOrMultipleVoicesAnalysisObjective {
 			doc /* determine whether to support recording single voice or multiple voices
 			 * for the FoodDispenser recoder
 			 */
+
+			require userFriendlySpecification::recorderEasyToUseReq;
+			require userFriendlySpecification::recorderOneMoreVoicesReq;
+			require userFriendlySpecification::recorderAffortableReq;
+
 			assume constraint {
 				doc /* 
 				 * Evaluate the system based on:
-				 * 1. The number of buttons, more button more operational complexity
-				 * 2. The complexity of system, more complexity more cost and time to build the system. Will use the state machine Diagram to support the satement
-				 * 3. The number of voices can be recorded, More voices mean more cache(cost) but better user experience
-				 * return true if singleVoiceRecoder(costIndex + friendlyIndex) > multipleVoiceRecoder(costIndex + friendlyIndex) Or multipleVoiceRecoder.costIndex == RecoderIndex::bad;
+				 * 1. The complexity of system, more complexity more cost and time to build the system. Will use the state machine Diagram to support the satement
+				 * 2. The number of voices can be recorded, More voices mean more cache(cost) but better user experience
+				 * return true if singleVoiceRecorder(costIndex + friendlyIndex) > multipleVoiceRecorder(costIndex + friendlyIndex) Or multipleVoiceRecorder.costIndex == RecoderIndex::bad;
 				 */
 			}
 		
@@ -215,25 +230,25 @@
 				event  occurrence record_voice_request;
 			}
 			
-		     part voiceRecoder[1]{
+		     part voiceRecorder[1]{
 				event occurrence record_request_received;
 				
 				event occurrence time_to_play_request;
 				then event occurrence voice_play_event;
 			}
-			message record_voice_message of PayloadDefinitions::RecordedVoiceDeliver from petOwner.record_voice_request to voiceRecoder.record_request_received;
+			message record_voice_message of PayloadDefinitions::RecordedVoiceDeliver from petOwner.record_voice_request to voiceRecorder.record_request_received;
 			
 			part mike[1] {
 				event occurrence voice_play_event;
 			
 			}
-			message time_to_play_message of PayloadDefinitions::TimerTrigger from scheduler.time_to_feed_event to voiceRecoder.time_to_play_request;
+			message time_to_play_message of PayloadDefinitions::TimerTrigger from scheduler.time_to_feed_event to voiceRecorder.time_to_play_request;
 			part scheduler[1] {
 				event occurrence time_to_feed_event;
 			}
 			
 	
-            message play_message of PayloadDefinitions::PlayVoiceDeliver from voiceRecoder.voice_play_event to mike.voice_play_event;
+            message play_message of PayloadDefinitions::PlayVoiceDeliver from voiceRecorder.voice_play_event to mike.voice_play_event;
 		
 	}
 	}

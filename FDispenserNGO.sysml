@@ -39,7 +39,7 @@ package FDispenserNGO {
 	}
 
     // conops
-	part voiceRecoderConops : Conops {
+	part voiceRecorderConops : Conops {
 		attribute :>>  text = "The pet owner can record the voice and the dispenser will play the voice when dispensing food. ";
 	}
 
@@ -65,8 +65,14 @@ package FDispenserNGO {
 
 	// allocate needs to conops
 	allocation recorderVoice : NeedToConops 
-		allocate voiceRecordandPlayNeed to voiceRecoderConops;
+		allocate voiceRecordandPlayNeed to voiceRecorderConops;
 	
+	allocation stayConnected: GoalToNeed
+	    allocate voiceRecordandPlayNeed to stayConnectedGoal;
+
+	allocation beHealth: GoalToNeed
+		allocate healthGoal to healthGuaranteeNeed;
+
 	// allocate requirements to needs
 	// allocate requirements to goals
 

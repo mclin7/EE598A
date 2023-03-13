@@ -18,7 +18,7 @@ package PetFoodDispenser {
         }
     }
     
-    perform action manuallyDispenseFood[*] :> ManuallyDispenseFood;
+    perform action manuallyDispenseFood[*] : ManuallyDispenseFood;
     perform action recordVioce; // TBD long push recording/ click place
     perform action autmaticDispenseFood;  // TBD 
     perform action refill;  // TBD open lid, put food, state to filled, lock the lid
@@ -30,21 +30,25 @@ package PetFoodDispenser {
         part monitor: Monitor;
         part charginsystem: ChargingSystem;
         part voiceRecorder: VoiceRecorder;
+        part base: Base;
     }
     
+    // mass/cost
     part foodDispenser: FoodDispenser{
         part redefines bowl {
-			attribute redefines material = '304 stainless steel';
+			attribute redefines material = "304 stainless steel";
 			attribute redefines mass = 30[g];
-			attribute redefine tilt = 8;
+			attribute redefines tilt = 8;
 		}
 		part redefines voiceRecorder {
-	        attribute redefines volume = 60;
 	        attribute redefines maxTime = 10[s];
+            attribute redefines mike: Mike {
+                attribute volume = 60;
+            }
 	        attribute mass = 10[g];
 	        part redefines buttons[1];
 	    }
-	   
+        
     }
     
     part def Scheduler {
@@ -68,11 +72,12 @@ package PetFoodDispenser {
     
     }
 
-	port def AssemblyPort
+	port def AssemblyPort;
+    part Base;
     part def Bowl{
     	attribute material: String;
     	attribute mass:>ISQ::mass;
-    	attribute tilt:Integer:  // tilt degree
+    	attribute tilt:Integer;  // tilt degree
 
     	port bulgingPort:AssemblyPort;  // used to connect with the PetFoodDispenser hopper
     }
@@ -86,7 +91,9 @@ package PetFoodDispenser {
         item dbag: DesiccantBag;
     }
     part def DesiccantBagHolder;
-    part def Mike;
+    part def Mike{
+        attribute volume: Integer;
+    }
     
     port def ControlPort;
     part def Tank;
@@ -96,17 +103,16 @@ package PetFoodDispenser {
     
 
     part def VoiceRecorder {
-        attribute volume: Integer;
         attribute maxTime: Integer;
         
         part buttons: SchedulePartDef::Button[1..4];
-        part mike:Mike;
+        part mike: Mike;
         
         port playSingalPort:ControlPort;  // connect to scheduler single port
         
         perform action recordVoice:RecordVoice;
         perform action mPlayVoice:ManuallyPlayVoice;
-        perform action sPlayVoice:SchedulePlayVoice;
+        perform action sPlayVoice:ScheduledPlayVoice;
     }
     part def Monitor; // To monitor how much food is dispensed
     

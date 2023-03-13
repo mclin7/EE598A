@@ -1,14 +1,17 @@
 package PetFoodDispenserAnalyses{
-	import AnalysisActions::*;
 	import Parts::*;
+    import ScalarValues::*;
 
 	/** see in teamP Analysis List  */
-	action voiceRecoderFriendlyAnalysis : AnalysisAction {
-		redefines oslcUri = "team3/userexperience/voiceRecoderFriendlyAnalysis";
+	action def AnalysisAction{
+		attribute oslcUri: String;
+	}
+	action voiceRecorderFriendlyAnalysis : AnalysisAction {
+		redefines oslcUri = "team3/userexperience/voiceRecorderFriendlyAnalysis";
 	}
 	
-	action voiceRecoderSystemComplexityAnalysis : AnalysisAction{
-		redefine oslcUri = "team3/cost/voiceRecoderSystemComplexityAnalysis"
+	action voiceRecorderSystemComplexityAnalysis : AnalysisAction{
+		redefines oslcUri = "team3/cost/voiceRecorderSystemComplexityAnalysis";
 	}
 	action bowlMaterialHealthyAnalysis: AnalysisAction{
 		redefines oslcUri = "team3/userexperience/bowlMaterialHealthyAnalysis";

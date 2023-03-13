@@ -23,6 +23,9 @@ package FDFriendlyVerfication {
     		assume constraint {volumeMinRequired<=actualVolume<=volumeMaxRequired}
     	}
     	requirement <'3'> recoderReliableRequirement: FoodDispenserRequirement;
+		requirement <'1-4'> recorderEasyToUseReq: FoodDispenserRequirement;
+		requirement <'1-5'> recorderAffortableReq: FoodDispenserRequirement;
+		requirement <'1-6'> recorderOneMoreVoicesReq: FoodDispenserRequirement;
     	requirement <'4'> bowlMaterialRequirement: FoodDispenserRequirement;
     	requirement bowlTiltRequirement: FoodDispenserRequirement;
     	requirement lockerRequirement: FoodDispenserRequirement;
@@ -126,7 +129,14 @@ package FDFriendlyVerfication {
     	}
     	return verdict: Boolean;
     }
-    
+	
+	verification def RecorderOneMoreVoicesTest {
+		subject foodDispenser:FoodDispenser;
+		objective {
+			verify userFriendlySpecification.recorderOneMoreVoicesReq;
+		}
+		return verdict: Boolean;
+	}
     // Test case pet health objective
     verification def BowlMaterialTest{
     	subject foodDispenser:FoodDispenser; 
@@ -152,10 +162,10 @@ package FDFriendlyVerfication {
     
     verification voiceRecordMaxTimeTest: VoiceRecordMaxTimeTest{
     	action timeingPlayingTime {
-    		out timeMeasured:>Integer;
+    		out timeMeasured: Integer;
     	}
     	then action evaluatePassFail{
-    		in timeMeasured:>Integer;
+    		in timeMeasured: Integer;
             out verdict = PassIf(userFriendlySpecification.voiceRecordTimeRequirement(foodDispenser));
     	}
         flow from timeingPlayingTime.timeMeasured to evaluatePassFail.timeMeasured;
@@ -164,10 +174,10 @@ package FDFriendlyVerfication {
     
     verification voiceRecordVolumeTest: VoiceRecordVolumeTest{
     	action measureVolume{
-    		out volumeMeasured:>Integer;
+    		out volumeMeasured: Integer;
     	}
     	then action evaluatePassFail{
-    		in volumeMeasured:>Integer;
+    		in volumeMeasured: Integer;
     		out verdict = PassIf(userFriendlySpecification.voicePlayVolumeRequirement(foodDispenser));
     	}
     	flow from measureVolume.volumeMeasured to evaluatePassFail.volumeMeasured;
@@ -176,17 +186,17 @@ package FDFriendlyVerfication {
     verification voiceRecordReliabilityTest: VoiceRecordReliabilityTest{
     	// Need a actor, turn off the  power and try if the replay of voice work or not.
     	action timeingPlayingTime {
-    		out timeMeasured:>Integer;
+    		out timeMeasured: Integer;
     	}
     	then action recordContent {
-    		out contentRecord:>String;
+    		out contentRecord: String;
     	}
     	then action cutOffThePower;
     	then action wait;
     	then action recoveryPowerSupply;
     	then action evaluatePassFail{
-    		in timeMeasured:>Integer;
-    		in contentRecord:>String;
+    		in timeMeasured: Integer;
+    		in contentRecord: String;
             out verdict = PassIf(userFriendlySpecification.recoderReliableRequirement(foodDispenser));
     	}
     	flow from timeingPlayingTime.timeMeasured to evaluatePassFail.timeMeasured;
@@ -213,10 +223,12 @@ package FDFriendlyVerfication {
     		in tiltDegree: Integer;
             out verdict = PassIf(userFriendlySpecification.bowlMaterialRequirement(foodDispenser));
     	}
-    	from checkBowlTiltDegree.tiltDegree to evaluatePassFail.tiltDegree
+
+    	flow from mesureBowlTiltDegree.tiltDegree to evaluatePassFail.tiltDegree;
     	return :>> verdict = evaluatePassFail.verdict;
-    	
+    
     }
+	verification recorderOneMoreVoicesTest: RecorderOneMoreVoicesTest; // follow mauall to record voice. Test how many voice can be recorded.
     verification lockerTest: LockerTest;  // need a actor. Test with different pulling forces(1 pound/3 pound/6pound)
     verification temperatureTest: TemperatureTest; // Place the dispenser in different temperature environment 
     verification movabilityTest: MovabilityTest; // Have a middle-age-person tried to move the dispenser see if it's easily movable
