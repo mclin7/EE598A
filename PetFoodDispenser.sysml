@@ -125,16 +125,34 @@ package PetFoodDispenser {
         perform action mPlayVoice:ManuallyPlayVoice;
         perform action sPlayVoice:ScheduledPlayVoice;
     }
+    
     part def Monitor{
          attribute foodWeightRecord:Real; 
          attribute alertThreshold: Real;
          attribute isalerting:Boolean;
          perform action alert:Alert;
     } // To monitor how much food is dispensed
-    
+
     part def ChargingSystem {
         // TODO
         part adapter:DispenserAdpater;
+        part batterySystem:BatterySystem;
+        part powerSource:PowerSource;
+    }
+    part def PowerSource {
+        attribute voltage : Real { constraint greater_than_zero; }
+        attribute current : Real { constraint greater_than_zero; }
+    }
+    part def BatterySystem {
+        attribute additionalCost: Integer;
+
+        part battery:AdditionalBattery;
+        part lowBatteryLight:LowBatteryLight;
+    }
+    part def LowBatteryLight {} // LED light to indicate low battery
+
+    part def AdditionalBattery {
+        attribute volume: Real;
     }
     part def DispenserAdpater:> DCAdapter {
         part redefines cable {
