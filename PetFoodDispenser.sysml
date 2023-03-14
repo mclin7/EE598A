@@ -73,9 +73,6 @@ package PetFoodDispenser {
             attribute redefines cost = 10;
 
 	        attribute redefines maxTime = 10[s];
-            attribute redefines mike: Mike {
-                attribute volume = 60;
-            }
 	        attribute mass = 10[g];
 	        part redefines buttons[1];
 	    }
@@ -176,8 +173,8 @@ package PetFoodDispenser {
         port playSingalPort:ControlPort;  // connect to scheduler single port
         
         perform action recordVoice:RecordVoice;
-        perform action mPlayVoice:ManuallyPlayVoice;
-        perform action sPlayVoice:ScheduledPlayVoice;
+        perform action mamuallyPlayVoice:ManuallyPlayVoice;
+        perform action autoPlayVoice:ScheduledPlayVoice;
     }
     part def Monitor{
         attribute cost: Integer;

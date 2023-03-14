@@ -18,8 +18,8 @@
 	
 	part def MultipleVoicesRecorder :> VoiceRecorder {
 		part redefines buttons[3];
-		attribute voicesCacheCount = 10;
-		attribute friendlyIndex = EvaluateIndex::okay;
+		attribute voicesCacheCount = 4;
+		attribute friendlyIndex = EvaluateIndex::good;
 		attribute costIndex = EvaluateIndex::bad;
 	}
 	
@@ -38,15 +38,7 @@
 	part multipleVoicesRecorder:MultipleVoicesRecorder;
 	part testMonitor: TestMonitor;
 	/* indicating where we got our sensor analysis from */
-	allocation singleVioceRecorderFDAnalysis : AnalysisActionToPart
-		allocate voiceRecorderFriendlyAnalysis to singleVoiceRecorder.friendlyIndex;
-	
-	allocation multipleVioceRecorderFDAnalysis : AnalysisActionToPart
-		allocate voiceRecorderFriendlyAnalysis to multipleVoicesRecorder.friendlyIndex;
-	
-	allocation sigleVoiceRecorderSystemComplexityAnalysis: AnalysisActionToPart
-	    allocate voiceRecorderSystemComplexityAnalysis to singleVoiceRecorder.costIndex;
-	
+
 	allocation monitorcostAnalysis : AnalysisActionToPart
 		allocate MonitorcostAnalysis  to testMonitor.cost;
 	
@@ -64,15 +56,28 @@
 
 		part fDWithSigleRecorder:>foodDispensers{
 			part redefines voiceRecorder: SingleVoiceRecorder;
-		}allocation multiVoiceRecorderSystemComplexityAnalysis : AnalysisActionToPart
-		allocate voiceRecorderSystemComplexityAnalysis to multipleVoicesRecorder.costIndex;
-		
+		}
 		part fDWithMultipleRecorder:>foodDispensers{
 			part redefines voiceRecorder: MultipleVoicesRecorder;
 		}
 
-		attribute singleVoiceRecorderIndex = RecorderEvaluation(fDWithSigleRecorder.voiceRecorder.friendlyIndex, fDWithSigleRecorder.voiceRecorder.costIndex);
-		attribute multipleVoicesRecorderIndex = RecorderEvaluation(fDWithMultipleRecorder.voiceRecorder.friendlyIndex, fDWithMultipleRecorder.voiceRecorder.costIndex);
+		/* indicating where we got our sensor analysis from */
+		allocation singleVioceRecorderFDAnalysis : AnalysisActionToPart
+		allocate voiceRecorderFriendlyAnalysis to fDWithSigleRecorder.voiceRecorder.friendlyIndex;
+
+		allocation sigleVoiceRecorderSystemComplexityAnalysis: AnalysisActionToPart
+	    allocate voiceRecorderSystemComplexityAnalysis to fDWithSigleRecorder.voiceRecorder.costIndex;
+	
+		allocation multiVoiceRecorderSystemComplexityAnalysis : AnalysisActionToPart
+		allocate voiceRecorderSystemComplexityAnalysis to fDWithMultipleRecorder.voiceRecorder.costIndex;
+		
+		allocation multipleVioceRecorderFDAnalysis : AnalysisActionToPart
+		allocate voiceRecorderFriendlyAnalysis to fDWithMultipleRecorder.voiceRecorder.friendlyIndex;
+	
+		attribute singleVoiceRecorderIndex = RecorderEvaluation(fDWithSigleRecorder.voiceRecorder.friendlyIndex, 
+																fDWithSigleRecorder.voiceRecorder.costIndex);
+		attribute multipleVoicesRecorderIndex = RecorderEvaluation(fDWithMultipleRecorder.voiceRecorder.friendlyIndex,
+																 fDWithMultipleRecorder.voiceRecorder.costIndex);
 		
 		/** note that here we are simply returning the choice we come up with */
 		return isSingleVioceBetter : Boolean = singleVoiceRecorderIndex>multipleVoicesRecorderIndex;
