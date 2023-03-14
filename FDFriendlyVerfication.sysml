@@ -2,7 +2,6 @@ package FDFriendlyVerfication {
     import ScalarValues::*;
 	import SI::*;
 	import VerificationCases::*;
-	
 	import PetFoodDispenser::*;
 	
 	requirement def FoodDispenserRequirement;

@@ -63,6 +63,18 @@ package FDispenserNGO {
 		attribute :>> text = "No feline acne or whisker stress or obesity";
 	}
 
+	// zyxing : charger system
+	part chargerBatteryConOps : Conops {
+		attribute :>> text = "The owner can use the DC adapter to power the dispenser. As an option, the user can pay more to get a dispenser that has dual power choice.";
+	}
+
+	part longivityNeed : Need{
+		attribute :>> text = "use it for a long period of time";
+	}
+
+	part longivityGoal : Goal{
+		attribute :>> text = "The pet owner can use one dispenser for a long time without worrying about it breaking or malfunctioning in daily usage.";
+	}
 	// allocate needs to conops
 	allocation recorderVoice : NeedToConops 
 		allocate voiceRecordandPlayNeed to voiceRecorderConops;
