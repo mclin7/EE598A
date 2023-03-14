@@ -37,7 +37,7 @@ package PetFoodDispenser {
         part foodHopper: FoodHopper;
         part bowl: Bowl;
         part monitor: Monitor;
-        part charginsystem: ChargingSystem;
+        part chargingsystem: ChargingSystem;
         part voiceRecorder: VoiceRecorder;
         part base: Base;
     }
@@ -66,7 +66,7 @@ package PetFoodDispenser {
 			attribute redefines tilt = 8;
 		}
 
-        part redefines charginsystem{
+        part redefines chargingsystem{
             attribute redefines mass = 500[g];
             attribute redefines cost = 10;
         }
@@ -197,6 +197,7 @@ package PetFoodDispenser {
         attribute mass :> ISQ::mass;
         attribute reliabilityRatingScale : Integer;
 
+        attribute hasBattery : Boolean;
         part adapter:DispenserAdpater;
         part batterySystem:BatterySystem;
         part powerSource:PowerSource;
@@ -206,13 +207,12 @@ package PetFoodDispenser {
         attribute current : Real { constraint greater_than_zero; }
     }
     part def BatterySystem {
-        attribute additionalCost: Integer;
-
         part battery:AdditionalBattery;
         part lowBatteryLight:LowBatteryLight;
     }
-    part def LowBatteryLight {} // LED light to indicate low battery
-
+    part def LowBatteryLight {
+        attribute On : Boolean;
+    } // LED light to indicate low battery
     part def AdditionalBattery {
         attribute volume: Real;
     }

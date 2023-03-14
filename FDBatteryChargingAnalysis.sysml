@@ -1,97 +1,103 @@
-package FDTradeOffAmongPowerConfig {
-    import ScalarValues::*;
+package FDBatteryChargingAnalysis {
+ 	import ScalarValues::*;
 	import SI::*;
 	import PetFoodDispenser::*;
+	import PetFoodDispenserAnalyses::*;
+	import FDFriendlyVerfication::*;
 
-    package Definitions {
-		
-		part def Battery {
+    calc def BatteryEvaluation {
+		in friendlyIndex : Integer;
+		in costIndex : Integer;
+		in complexity : Integer;
+		return : Integer;
+	}
 
-        }
-		
-		part def Engine {
-			power : ISQ::PowerValue;
-			mass : ISQ::MassValue;
-			efficiency : Real;
-			reliability : Real;
-			cost : Real;
+	part def BatteryChargingSystem :> ChargingSystem {
+		attribute redefines hasBattery = true;
+		attribute friendlyIndex = EvaluateIndex::excellent;
+		attribute costIndex = EvaluateIndex::okay;
+		attribute complexity = EvaluateIndex::bad;
+	}
+	
+	part def SingleChargingSystem :> ChargingSystem {
+		attribute redefines hasBattery = false;
+		attribute friendlyIndex = EvaluateIndex::okay;
+		attribute costIndex = EvaluateIndex::good;
+		attribute complexity = EvaluateIndex::okay;
+	}
+
+	part singleChargingSystemFD: FoodDispenser{
+		part redefines chargingsystem : SingleChargingSystem;
+	}
+
+	part batteryChargingSystemFD: FoodDispenser{
+		part redefines chargingsystem : BatteryChargingSystem;
+	}
+
+	part singleChargingSystem:SingleChargingSystem;
+	part batteryChargingSystem:BatteryChargingSystem;
+
+	/* indicating where we got our charging analysis from */
+
+	allocation singleChargingFDAnalysis : AnalysisActionToPart
+		allocate batteryChargingFriendlyAnalysis to singleChargingSystem.friendlyIndex;
+
+	allocation batteryChargingFDAnalysis : AnalysisActionToPart
+		allocate batteryChargingFriendlyAnalysis to batteryChargingSystem.friendlyIndex;
+
+	allocation singleChargingComplexityAnalysis : AnalysisActionToPart
+		allocate batteryChargingComplexityAnalysis to singleChargingSystem.complexity;
+
+	allocation batteryChargingComplexityAnalysis : AnalysisActionToPart
+		allocate batteryChargingComplexityAnalysis to batteryChargingSystem.complexity;
+	
+	allocation singleChargingCostAnalysis : AnalysisActionToPart
+		allocate batteryChargingCostAnalysis to singleChargingSystem.cost;
+
+	allocation batteryChargingCostAnalysis : AnalysisActionToPart
+		allocate batteryChargingCostAnalysis to batteryChargingSystem.cost;
+	
+	/* Trade-off between battery / no-battery charging choice */
+	analysis batteryChargingTradeOffAnalysis {
+		subject foodDispenser[2]: FoodDispenser;
+
+		part fdWithBatteryCharging :> foodDispenser{
+			part redefines chargingsystem: BatteryChargingSystem;
+		}
+
+		part fdWithoutBatteryCharging :> foodDispenser{
+			part redefines chargingsystem: SingleChargingSystem;
 		}
 		
-		part def Piston;
-		part def Cylinder;
-		part def ConnectingRod;
-		part def CrankShaft;
+		attribute batteryChargingIndex = BatteryEvaluation(
+			fdWithBatteryCharging.chargingsystem.friendlyIndex, 
+			fdWithBatteryCharging.chargingsystem.costIndex,
+			fdWithBatteryCharging.chargingsystem.complexity);
+
+		attribute singleChargingIndex = BatteryEvaluation(
+			fdWithoutBatteryCharging.chargingsystem.friendlyIndex, 
+			fdWithoutBatteryCharging.chargingsystem.costIndex,
+			fdWithoutBatteryCharging.chargingsystem.complexity);
 		
-		part def '4CylCrankShaft' :> CrankShaft;
-		part def '6CylCrankShaft' :> CrankShaft;
+		return isSingleChargingBetter : Boolean = singleChargingIndex>batteryChargingIndex;
+
+		objective SingleOrBatteryChargingAnalysisObjective {
+			doc
+			/* determine whether should we support single charging system 
+			or battery charging system */
+
+			require userFriendlySpecification::powerStandardRequirement;
+
+			assume constraint {
+				doc /* 
+				 * Evaluate the system based on:
+				 * 1. The complexity of charging system, more complexity more cost and time to build the system. Will use the state machine Diagram to support the satement
+				 * 2. How much users' need toward having a battery charging to gaining a longer using time
+				 * 3. Cost of adding build battery charging system in current model; and how much profit can we made out of it
+				 */
+			}
+		}
 		
 	}
 	
-	package Usages {
-		
-		part engine : Engine {
-			part cyl[*] : Cylinder {
-				part p[1] : Piston;
-				part rod[1] : ConnectingRod;
-			}
-			
-			part cs : CrankShaft;
-		}
-		
-		variation part engineChoice :> engine {
-			variant part '4cylEngine' {
-				part :>> cyl[4];
-				part :>> cs : '4CylCrankShaft';
-			}
-			
-			variant part '6cylEngine' {
-				part :>> cyl[6];
-				part :>> cs : '6CylCrankShaft';
-			}
-		}
-		
-		part vehicle : Vehicle {
-			part engine[1] :> engineChoice = engineChoice::'6cylEngine' {
-				assert constraint engineSelectionRational { 
-					doc /* Selected the best engine based on the 'engineTradeStudy'. */
-					engine == Analysis::engineTradeStudy.selectedAlternative
-				}
-			}
-			
-		}
-	}
-	
-	package Analysis {
-
-		calc def EngineEvaluation {
-			doc /* Evaluation function with criteria power, mass, efficency and cost. */
-			in power : ISQ::PowerValue;
-			in mass : ISQ::MassValue; 
-			in efficiency : Real; 
-			in cost : Real;
-			return evaluation : Real;
-			// Compute evaluation...
-		}
-			
-		analysis engineTradeStudy : TradeStudy {
-			subject : Engine[1..*] = all engineChoice;
-			objective : MaximizeObjective;
-
-			calc :>> evaluationFunction {
-				in part anEngine :>> alternative : Engine;
-				
-				calc powerRollup { in engine = anEngine; return power:>ISQ::power; }
-				calc massRollup { in engine = anEngine; return mass:>ISQ::mass; }
-				calc efficiencyRollup { in engine = anEngine; return efficiency: Real; }
-				calc costRollup { in engine = anEngine; return cost: Real; }
-				
-				return :>> result : Real = EngineEvaluation(
-					powerRollup.power, massRollup.mass, efficiencyRollup.efficiency, costRollup.cost
-				);
-			}
-			
-			return part :>> selectedAlternative : Engine;
-		}
-        
-	}
 }

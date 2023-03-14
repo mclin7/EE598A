@@ -29,6 +29,18 @@ package PetFoodDispenserAnalyses{
 		redefines oslcUri = "team3/userexperience/portabilityAnalysis";
 	}
 
+	action batteryChargingComplexityAnalysis : AnalysisAction{
+		redefines oslcUri = "team3/complexity/BatteryCharginComplexitygAnalysis";
+	}
+
+	action batteryChargingFriendlyAnalysis : AnalysisAction{
+		redefines oslcUri = "team3/userexperience/BatteryChargingFriendlyAnalysis";
+	}
+
+	action batteryChargingCostAnalysis : AnalysisAction{
+		redefines oslcUri = "team3/cost/BatteryChargingCostAnalysis";
+	}
+
 	/** connects outside analysis to a part  */		
 	allocation def AnalysisActionToPart {
 		end classAct : AnalysisAction;

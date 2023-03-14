@@ -57,7 +57,7 @@ package FDFriendlyVerfication {
 			doc /*The monitor should alarm the user when food weight is low*/
 			attribute actualalertstatus:Boolean;
 			attribute expectedstatus = true;
-			assume constraint {actualalertstatus==expectedstatus};		
+			assume constraint {actualalertstatus==expectedstatus}	
 		}
 		
     }
