@@ -7,26 +7,20 @@
 	import PetFoodDispenserAnalyses::*;
 	import FDFriendlyVerfication::*;
 	
-    /** For early stage design may not have more than a few levels to distinguish*/
-	enum def RecoderIndex :> Integer {
-		excellent = 4;
-		good = 3;
-		okay = 2;
-		bad = 1;
-	}
+
 	
 	part def SingleVoiceRecorder :> VoiceRecorder {
 		part redefines buttons[1];
 		attribute voicesCacheCount = 1;
-		attribute friendlyIndex = RecoderIndex::good;
-		attribute costIndex = RecoderIndex::excellent;
+		attribute friendlyIndex = EvaluateIndex::good;
+		attribute costIndex = EvaluateIndex::excellent;
 	}
 	
 	part def MultipleVoicesRecorder :> VoiceRecorder {
 		part redefines buttons[3];
 		attribute voicesCacheCount = 10;
-		attribute friendlyIndex = RecoderIndex::okay;
-		attribute costIndex = RecoderIndex::bad;
+		attribute friendlyIndex = EvaluateIndex::okay;
+		attribute costIndex = EvaluateIndex::bad;
 	}
 	
 	part singleVioceRecoderFD: FoodDispenser{
@@ -88,7 +82,7 @@
 				 * Evaluate the system based on:
 				 * 1. The complexity of system, more complexity more cost and time to build the system. Will use the state machine Diagram to support the satement
 				 * 2. The number of voices can be recorded, More voices mean more cache(cost) but better user experience
-				 * return true if singleVoiceRecorder(costIndex + friendlyIndex) > multipleVoiceRecorder(costIndex + friendlyIndex) Or multipleVoiceRecorder.costIndex == RecoderIndex::bad;
+				 * return true if singleVoiceRecorder(costIndex + friendlyIndex) > multipleVoiceRecorder(costIndex + friendlyIndex) Or multipleVoiceRecorder.costIndex == EvaluateIndex::bad;
 				 */
 			}
 		
