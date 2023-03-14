@@ -9,11 +9,15 @@ package PDBehavior {
     action def Readweigh {out weight:Real;}
     action def ProcessWdata{in data:Real;}
     action def Sendmessage {out cmd:Integer;}
-    action def StopSending{out cmd:Integer; }
+    action def StopSending{out cmd:Integer;}
     action def HopperDismount;
-
+    action def LowBatterySignal{ out signal:Integer;}
+    action def ChargingSignal{ out signal:Integer;}
+    action def ConnectWithPW{ out signal:Integer;}
 
     action def SendPlaySignal { out cmd: Integer; }
+    action def chargingSignal { out cmd: Integer; }
+    action def ReadBattery { out battery : Integer; }
     action def Record{
         in icmd: Integer;
         in stopSignal: Boolean;  
@@ -52,7 +56,7 @@ package PDBehavior {
         action def DispenserOpen {
             in cmd: Integer;
         }
-        
+
     }
     action def RecordVoice {
         first start;
@@ -80,7 +84,6 @@ package PDBehavior {
 
         action pressButton: PutButton;
     }
-    
     action def ManuallyPlayVoice{
         first start;
         then action pressButton: PutButton;
@@ -147,6 +150,47 @@ package PDBehavior {
       
     }
 
-    action def Dispense; // TBD
+    action def Charging{
+        first start;
+        then merge continue;
+        then action connectWithPW:ConnectWithPW;
+        then action processWdata:ProcessWdata{
+            in data= connectWithPW.signal;
+        }
+        then decide;
+            if processWdata.data == 0 then notCharging;
+            if processWdata.data == 1 then chargingNow;
+
+        then continue;
+
+        action chargingNow:ChargingSignal{
+            out signal=1;
+        }
+        action notCharging:ChargingSignal{
+            out signal=0;
+        }
+
+        then action lowBatteryCheck:lowBatteryLightAlert;
+    }
+
+    action def lowBatteryLightAlert{
+        first start;
+        then merge continue;
+        then action readBattery:ReadBattery;
+        then action processWdata:ProcessWdata{
+            in data= readBattery.battery;
+        }
+        then decide;
+            if processWdata.data <= 20 then lightLowBatterySignal;
+            if processWdata.data > 20 then stopLowBatterySignal;
+
+        action lightLowBatterySignal:LowBatterySignal{
+            out signal=1;
+        }
+        action stopLowBatterySignal:LowBatterySignal{
+            out sigal=0;
+        }
+        then done;
+    }
 
 }
