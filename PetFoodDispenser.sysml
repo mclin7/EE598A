@@ -28,10 +28,7 @@ package PetFoodDispenser {
     }
     
     perform action manuallyDispenseFood[*] : ManuallyDispenseFood;
-    perform action recordVioce; // TBD long push recording/ click place
-    perform action autmaticDispenseFood;  // TBD 
-    perform action refill;  // TBD open lid, put food, state to filled, lock the lid
-    
+
     part def FoodDispenser {
         part scheduler: Scheduler;
         part foodHopper: FoodHopper;
@@ -186,6 +183,7 @@ package PetFoodDispenser {
         attribute cost: Integer;
         attribute performance:Integer;
         attribute mass :> ISQ::mass;
+        attribute performance: Integer;
 
         attribute foodWeightRecord:Real; 
         attribute alertThreshold: Real;
@@ -209,6 +207,8 @@ package PetFoodDispenser {
         attribute current : Real { constraint greater_than_zero; }
     }
     part def BatterySystem {
+        attribute additionalCost: Integer;
+
         part battery:AdditionalBattery;
         part lowBatteryLight:LowBatteryLight;
     }

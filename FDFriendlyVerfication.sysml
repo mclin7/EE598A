@@ -2,6 +2,7 @@ package FDFriendlyVerfication {
     import ScalarValues::*;
 	import SI::*;
 	import VerificationCases::*;
+	
 	import PetFoodDispenser::*;
 	
 	requirement def FoodDispenserRequirement;
@@ -57,7 +58,7 @@ package FDFriendlyVerfication {
 			doc /*The monitor should alarm the user when food weight is low*/
 			attribute actualalertstatus:Boolean;
 			attribute expectedstatus = true;
-			assume constraint {actualalertstatus==expectedstatus}	
+			assume constraint {actualalertstatus==expectedstatus}
 		}
 		
     }
@@ -152,6 +153,10 @@ package FDFriendlyVerfication {
     	}
     	return verdict: Boolean;
     }
+
+	verification def EazyCleanupTest;
+	verification def AlertAbilityTest;
+
     verification def BowlTiltTest{
     	subject foodDispenser:FoodDispenser; 
     	objective {
@@ -247,7 +252,7 @@ package FDFriendlyVerfication {
     verification alertAbilityTest: AlertAbilityTest{
     	subject foodDispenser:FoodDispenser; 
     	objective {
-			verify userFriendlySpecification.alertAbilityRequirement
+			verify userFriendlySpecification.alertAbilityRequirement;
 		}
 		return verdict: Boolean;
     	}

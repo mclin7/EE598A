@@ -127,7 +127,7 @@ package PDBehavior {
             in cmd: Integer;
         }
         
-      action def Refill{
+      action def RefillFood {
         first start;
     
         then merge continueOpening;
@@ -218,5 +218,7 @@ package PDBehavior {
         }
         then done;
     }
+
+    action def Dispense;
 
 }

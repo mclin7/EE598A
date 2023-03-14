@@ -36,6 +36,7 @@
 	
 	part singleVoiceRecorder:SingleVoiceRecorder;
 	part multipleVoicesRecorder:MultipleVoicesRecorder;
+	part testMonitor: TestMonitor;
 	/* indicating where we got our sensor analysis from */
 	allocation singleVioceRecorderFDAnalysis : AnalysisActionToPart
 		allocate voiceRecorderFriendlyAnalysis to singleVoiceRecorder.friendlyIndex;
@@ -47,13 +48,11 @@
 	    allocate voiceRecorderSystemComplexityAnalysis to singleVoiceRecorder.costIndex;
 	
 	allocation monitorcostAnalysis : AnalysisActionToPart
-		allocate MonitorcostAnalysis  to TestMonitor.cost;
+		allocate MonitorcostAnalysis  to testMonitor.cost;
 	
 	allocation monitorReliablityAnalysis : AnalysisActionToPart
-		allocate MonitorReliablityAnalysis to TestMonitor.performance;
-	
-	
-		
+		allocate MonitorReliablityAnalysis to testMonitor.performance;
+
     calc def RecorderEvaluation {
         in friendlyIndex: Integer;
         in costIndex: Integer;
