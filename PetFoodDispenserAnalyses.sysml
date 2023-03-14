@@ -30,7 +30,7 @@ package PetFoodDispenserAnalyses{
 	}
 	
 	action MonitorcostAnalysis:AnalysisAction{
-		redefines oslcUri = "team3/userexperience/MonitorcostAnalysis";
+		redefines oslcUri = "team3/cost/MonitorcostAnalysis";
 	}
 	
 	action MonitorReliablityAnalysis:AnalysisAction{
