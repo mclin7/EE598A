@@ -27,11 +27,11 @@ package FDBatteryChargingAnalysis {
 	}
 
 	part singleChargingSystemFD: FoodDispenser{
-		part redefines chargingsystem : SingleChargingSystem;
+		part redefines charginsystem : SingleChargingSystem;
 	}
 
 	part batteryChargingSystemFD: FoodDispenser{
-		part redefines chargingsystem : BatteryChargingSystem;
+		part redefines charginsystem : BatteryChargingSystem;
 	}
 
 	part singleChargingSystem:SingleChargingSystem;
@@ -62,22 +62,22 @@ package FDBatteryChargingAnalysis {
 		subject foodDispenser[2]: FoodDispenser;
 
 		part fdWithBatteryCharging :> foodDispenser{
-			part redefines chargingsystem: BatteryChargingSystem;
+			part redefines charginsystem: BatteryChargingSystem;
 		}
 
 		part fdWithoutBatteryCharging :> foodDispenser{
-			part redefines chargingsystem: SingleChargingSystem;
+			part redefines charginsystem: SingleChargingSystem;
 		}
 		
 		attribute batteryChargingIndex = BatteryEvaluation(
-			fdWithBatteryCharging.chargingsystem.friendlyIndex, 
-			fdWithBatteryCharging.chargingsystem.costIndex,
-			fdWithBatteryCharging.chargingsystem.complexity);
+			fdWithBatteryCharging.charginsystem.friendlyIndex, 
+			fdWithBatteryCharging.charginsystem.costIndex,
+			fdWithBatteryCharging.charginsystem.complexity);
 
 		attribute singleChargingIndex = BatteryEvaluation(
-			fdWithoutBatteryCharging.chargingsystem.friendlyIndex, 
-			fdWithoutBatteryCharging.chargingsystem.costIndex,
-			fdWithoutBatteryCharging.chargingsystem.complexity);
+			fdWithoutBatteryCharging.charginsystem.friendlyIndex, 
+			fdWithoutBatteryCharging.charginsystem.costIndex,
+			fdWithoutBatteryCharging.charginsystem.complexity);
 		
 		return isSingleChargingBetter : Boolean = singleChargingIndex>batteryChargingIndex;
 
