@@ -197,22 +197,24 @@ package FDFriendlyVerfication {
     }
     verification voiceRecordReliabilityTest: VoiceRecordReliabilityTest{
     	// Need a actor, turn off the  power and try if the replay of voice work or not.
-    	action timeingPlayingTime {
+    	action recordAndPlayTheVoice;
+		then action timeingPlayingTime {
     		out timeMeasured: Integer;
     	}
     	then action recordContent {
-    		out contentRecord: String;
+    		out contentRecorded: String;
     	}
     	then action cutOffThePower;
     	then action wait;
-    	then action recoveryPowerSupply;
+    	then action recoverPowerSupply;
+		then action PlayVoice;
     	then action evaluatePassFail{
     		in timeMeasured: Integer;
     		in contentRecord: String;
             out verdict = PassIf(userFriendlySpecification.recoderReliableRequirement(foodDispenser));
     	}
     	flow from timeingPlayingTime.timeMeasured to evaluatePassFail.timeMeasured;
-    	flow from recordContent.contentRecord to evaluatePassFail.contentRecord;
+    	flow from recordContent.contentRecorded to evaluatePassFail.contentRecord;
     	return :>> verdict = evaluatePassFail.verdict;
     	
     } 
